@@ -73,6 +73,21 @@
   .fg>span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
   .fg.b{border-color:rgba(242,201,76,.35)} .fg.n{border-color:rgba(90,169,255,.35)}
   .tools{display:flex;gap:10px;flex-wrap:wrap}
+  /* цвета */
+  .ptitle{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+  select{background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px 10px;font:inherit;min-width:150px}
+  .dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:10px;vertical-align:-1px;border:1px solid rgba(255,255,255,.25)}
+  .kt{display:inline-block;font-size:11px;padding:1px 8px;border-radius:999px;margin-left:8px;border:1px solid var(--line);color:var(--muted)}
+  .kt.h{border-color:rgba(242,201,76,.5);color:var(--bu)} .kt.s{border-color:rgba(90,169,255,.5);color:var(--new)}
+  tr.itogo td{font-weight:700;background:var(--card2)}
+  .csum{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .csum span{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-size:14px}
+  .csum b{font-size:16px}
+  .cedit{margin-top:18px;padding-top:16px;border-top:1px dashed var(--line)}
+  .cedit summary{cursor:pointer;color:var(--accent);font-weight:600}
+  #colorF input{background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:6px 8px;width:80px;font:inherit;text-align:center}
+  #colorF input:focus{outline:none;border-color:var(--accent)}
+  .hint{color:var(--muted);font-size:13px;margin-bottom:10px}
   @media (max-width:900px){
     body{flex-direction:column} aside{width:auto;min-height:0;flex:none}
     aside .navs{display:flex;overflow-x:auto} .grp{display:none}
@@ -133,6 +148,22 @@
   </section>
 
   <section class="panel">
+    <div class="ptitle">
+      <div><h2>Кашалоты по цветам</h2><div class="ph">Остатки по цвету, катку (софт / хард) и рулю.</div></div>
+      <div class="f"><label>Остатки на дату</label><select id="cView"></select></div>
+    </div>
+    <div class="tablewrap"><table id="colorT" style="min-width:560px"></table></div>
+    <div class="csum" id="colorSum"></div>
+    <details class="cedit" id="colorEdit">
+      <summary>✎ Внести / обновить остатки по цветам</summary>
+      <div class="f" style="margin:14px 0"><label>Дата</label><input type="date" id="cfDate"></div>
+      <div class="hint" id="cfHint"></div>
+      <div class="tablewrap"><table id="colorF" style="min-width:640px"></table></div>
+      <div style="margin-top:14px"><button class="btn pri" id="cfSave">Сохранить остатки на дату</button></div>
+    </details>
+  </section>
+
+  <section class="panel">
     <h2>Планируемое поступление</h2>
     <div class="ph">Новые 2027 — что и когда ожидаем на склад.</div>
     <div class="tablewrap"><table id="planT"></table></div>
@@ -161,8 +192,8 @@ let db={stock:[],plan:[]};
 const now=()=>new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
 function status(t,err){const s=document.getElementById('status');s.textContent=t;s.style.color=err?'var(--danger)':''}
 
-async function sb(path,opt={}){
-  const r=await fetch(`${SB_URL}/rest/v1/nalichie${path}`,{...opt,headers:{
+async function sb(path,opt={},table='nalichie'){
+  const r=await fetch(`${SB_URL}/rest/v1/${table}${path}`,{...opt,headers:{
     apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json',Prefer:'return=minimal'}});
   if(!r.ok)throw new Error((await r.text())||r.status);
   return r.status===200?r.json():null;
@@ -176,6 +207,8 @@ async function load(){
     db={stock:rows.filter(r=>r.kind==='stock'),plan:rows.filter(r=>r.kind==='plan')};
     status('Общие данные · обновлено в '+now());
   }catch(e){status('Не удалось загрузить данные: '+e.message,true)}
+  try{colors=await sb('?select=*&order=date',{},'kashalot_colors');colorsErr=''}
+  catch(e){colorsErr='Таблица цветов ещё не создана в Supabase'}
   render();
 }
 async function change(op,row){
@@ -243,7 +276,71 @@ function renderKpis(){
   }).join('');
 }
 
-function render(){renderStock();renderPlan();renderKpis()}
+// ---- Кашалоты по цветам (таблица kashalot_colors: date, color, katok, rul_cel, rul_skl) ----
+const COLORS=[['Фиолетовый','#8e6cf0'],['Салатовый','#a3e05a'],['Бирюзовый','#2ec4b6'],['Голубой','#5ab8ff'],
+  ['Белый','#f1f3f5'],['Синий','#2f5fe0'],['Красный','#e5484d'],['Жёлтый','#f5c84c']];
+const KATOK=['Хард','Софт'];
+let colors=[], colorsErr='', cView='';
+const colorDates=()=>[...new Set(colors.map(r=>r.date))].sort().reverse();
+const snap=d=>colors.filter(r=>r.date===d);
+const ktag=k=>`<span class="kt ${k==='Хард'?'h':'s'}">${k}</span>`;
+
+function renderColors(){
+  const dates=colorDates();
+  if(!dates.includes(cView))cView=dates[0]||'';
+  document.getElementById('cView').innerHTML=dates.length
+    ?dates.map(d=>`<option value="${d}" ${d===cView?'selected':''}>${fmtDate(d)}</option>`).join('')
+    :'<option>—</option>';
+  const rows=[];
+  COLORS.forEach(([c,hex])=>KATOK.forEach(k=>{
+    const r=snap(cView).find(x=>x.color===c&&x.katok===k);
+    if(r&&n(r.rul_cel)+n(r.rul_skl))rows.push({c,hex,k,cel:n(r.rul_cel),skl:n(r.rul_skl)});
+  }));
+  const sum=f=>rows.reduce((s,r)=>s+f(r),0);
+  let body=rows.map(r=>`<tr><td><span class="dot" style="background:${r.hex}"></span>${r.c}${ktag(r.k)}</td>
+    ${cell(r.cel)}${cell(r.skl)}<td class="tot">${r.cel+r.skl}</td></tr>`).join('');
+  if(rows.length)body+=`<tr class="itogo"><td>ИТОГО</td><td>${sum(r=>r.cel)}</td><td>${sum(r=>r.skl)}</td><td>${sum(r=>r.cel+r.skl)}</td></tr>`;
+  else body=`<tr><td colspan="4" class="empty">${colorsErr||'Пока нет остатков по цветам — внесите их ниже'}</td></tr>`;
+  document.getElementById('colorT').innerHTML=`<thead><tr><th>Цвет / Тип</th><th>Цельный руль</th><th>Складной</th><th>Всего</th></tr></thead><tbody>${body}</tbody>`;
+  document.getElementById('colorSum').innerHTML=rows.length?
+    `<span>Всего: <b>${sum(r=>r.cel+r.skl)}</b> шт.</span>`+KATOK.map(k=>`<span>${k} — <b>${sum(r=>r.k===k?r.cel+r.skl:0)}</b> шт.</span>`).join(''):'';
+}
+
+function fillColorForm(){
+  const d=document.getElementById('cfDate').value, own=snap(d), last=colorDates()[0];
+  const src=own.length?own:snap(last);
+  document.getElementById('cfHint').textContent=own.length?'На эту дату остатки уже есть — исправьте и сохраните.'
+    :src.length?`Подставлены остатки на ${fmtDate(last)} — поменяйте, что изменилось.`:'Заполните количество, пустые клетки = 0.';
+  const v=(c,k,f)=>{const r=src.find(x=>x.color===c&&x.katok===k);return r&&n(r[f])?n(r[f]):''};
+  document.getElementById('colorF').innerHTML=`<thead><tr><th rowspan="2">Цвет</th>${KATOK.map((k,i)=>`<th colspan="2" class="g ${i?'gn':'gb'} sep">${k}</th>`).join('')}</tr>
+    <tr>${KATOK.map(()=>'<th class="sep">Цельный руль</th><th>Складной</th>').join('')}</tr></thead><tbody>${
+    COLORS.map(([c,hex])=>`<tr><td><span class="dot" style="background:${hex}"></span>${c}</td>${KATOK.map(k=>
+      ['rul_cel','rul_skl'].map((f,j)=>`<td class="${j?'':'sep'}"><input type="number" min="0" placeholder="0" data-c="${c}" data-k="${k}" data-f="${f}" value="${v(c,k,f)}"></td>`).join('')).join('')}</tr>`).join('')}</tbody>`;
+}
+
+async function saveColors(){
+  const d=document.getElementById('cfDate').value;if(!d)return alert('Выберите дату');
+  const rows={};
+  document.querySelectorAll('#colorF input').forEach(i=>{
+    const key=i.dataset.c+'|'+i.dataset.k;
+    rows[key]=rows[key]||{date:d,color:i.dataset.c,katok:i.dataset.k,rul_cel:0,rul_skl:0};
+    rows[key][i.dataset.f]=n(i.value);
+  });
+  const list=Object.values(rows).filter(r=>r.rul_cel+r.rul_skl);
+  status('Сохраняю…');
+  try{
+    await sb(`?date=eq.${d}`,{method:'DELETE'},'kashalot_colors'); // одна раскладка на дату
+    if(list.length)await sb('',{method:'POST',body:JSON.stringify(list)},'kashalot_colors');
+  }catch(e){return status('Ошибка сохранения: '+e.message,true)}
+  cView=d;document.getElementById('colorEdit').open=false;load();
+}
+document.getElementById('cView').onchange=e=>{cView=e.target.value;renderColors()};
+document.getElementById('cfDate').onchange=fillColorForm;
+document.getElementById('cfSave').onclick=saveColors;
+document.getElementById('colorEdit').addEventListener('toggle',e=>{if(e.target.open)fillColorForm()});
+document.getElementById('cfDate').valueAsDate=new Date();
+
+function render(){renderStock();renderPlan();renderKpis();renderColors()}
 
 function download(name,text,type){
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));
