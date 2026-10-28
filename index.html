@@ -73,7 +73,6 @@
   .fg>span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
   .fg.b{border-color:rgba(242,201,76,.35)} .fg.n{border-color:rgba(90,169,255,.35)}
   .tools{display:flex;gap:10px;flex-wrap:wrap}
-  .foot{position:sticky;bottom:0}
   @media (max-width:900px){
     body{flex-direction:column} aside{width:auto;min-height:0;flex:none}
     aside .navs{display:flex;overflow-x:auto} .grp{display:none}
@@ -100,7 +99,7 @@
 
 <main>
   <div class="head">
-    <div><h1>Наличие</h1><div class="sub">Кашалоты, АКБ, зарядные устройства и пляжные модули на складе</div></div>
+    <div><h1>Наличие</h1><div class="sub">Кашалоты, АКБ, зарядные устройства и пляжные модули на складе</div><div class="sub" id="status" style="font-size:13px"></div></div>
     <div class="tools">
       <button class="btn" id="csv">⤓ Скачать CSV</button>
       <button class="btn" id="refresh">⟳ Обновить</button>
@@ -151,22 +150,53 @@
 </main>
 
 <script>
-const KEY='kashalot_nalichie_v1';
+// Общие данные — таблица nalichie в Supabase (kind: stock — остаток, plan — поступление).
+const SB_URL='https://uemsjyfavpaqibibfydm.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbXNqeWZhdnBhcWliaWJmeWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxOTU3NTMsImV4cCI6MjEwODc3MTc1M30.OqZenxOuhwzoBzvP7mjUJiD1nweq7eopjkJY3bfd4ko'; // anon public
 const ITEMS=[['ks','Кашалоты'],['akb','АКБ'],['zu','ЗУ'],['pm','Пляжные модули']];
 const WD=['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+const COLS=['bu_ks','bu_akb','bu_zu','bu_pm','n_ks','n_akb','n_zu','n_pm'];
 
-function load(){
-  try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.stock&&d.plan)return d}catch(e){}
-  return {stock:[],plan:[]};
+let db={stock:[],plan:[]};
+const now=()=>new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+function status(t,err){const s=document.getElementById('status');s.textContent=t;s.style.color=err?'var(--danger)':''}
+
+async function sb(path,opt={}){
+  const r=await fetch(`${SB_URL}/rest/v1/nalichie${path}`,{...opt,headers:{
+    apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json',Prefer:'return=minimal'}});
+  if(!r.ok)throw new Error((await r.text())||r.status);
+  return r.status===200?r.json():null;
 }
-function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}}
-let db=load();
+
+async function load(){
+  if(!SB_URL){status('База не подключена',true);return render()}
+  status('Загружаю…');
+  try{
+    const rows=await sb('?select=*&order=date');
+    db={stock:rows.filter(r=>r.kind==='stock'),plan:rows.filter(r=>r.kind==='plan')};
+    status('Общие данные · обновлено в '+now());
+  }catch(e){status('Не удалось загрузить данные: '+e.message,true)}
+  render();
+}
+async function change(op,row){
+  status('Сохраняю…');
+  try{
+    if(op==='addStock'){ // в наличии одна запись на дату
+      await sb(`?kind=eq.stock&date=eq.${row.date}`,{method:'DELETE'});
+      await sb('',{method:'POST',body:JSON.stringify({...row,kind:'stock'})});
+    }
+    if(op==='addPlan')await sb('',{method:'POST',body:JSON.stringify({...row,kind:'plan'})});
+    if(op==='delStock'||op==='delPlan')await sb(`?id=eq.${row.id}`,{method:'DELETE'});
+  }catch(e){status('Ошибка сохранения: '+e.message,true);return}
+  load();
+}
 
 const n=v=>Number(v)||0;
 const fmtDate=s=>{const [y,m,d]=s.split('-');return `${d}.${m}.${y}`};
 const wd=s=>WD[new Date(s+'T00:00:00').getDay()];
 const cell=v=>`<td class="${n(v)?'':'zero'}">${n(v)}</td>`;
 const byDate=(a,b)=>a.date.localeCompare(b.date);
+const indexed=t=>db[t].map((r,i)=>({...r,_i:i}));
 
 function headRow(groups){
   const top=`<tr><th rowspan="2">Дата</th><th rowspan="2">День недели</th>${
@@ -176,24 +206,24 @@ function headRow(groups){
 }
 
 function renderStock(){
-  const rows=[...db.stock].sort(byDate).reverse();
+  const rows=indexed('stock').sort(byDate).reverse();
   let body=rows.map((r,i)=>`<tr class="${i?'':'last'}">
     <td>${fmtDate(r.date)}${i?'':'<span class="tag">последний</span>'}</td><td class="wd">${wd(r.date)}</td>
     ${ITEMS.map(([k],j)=>cell(r['bu_'+k]).replace('<td class="','<td class="'+(j?'':'sep ')))
       .join('')}
     ${ITEMS.map(([k],j)=>cell(r['n_'+k]).replace('<td class="','<td class="'+(j?'':'sep ')))
       .join('')}
-    <td><button class="del" title="Удалить" data-t="stock" data-id="${r.id}">✕</button></td></tr>`).join('');
+    <td><button class="del" title="Удалить" data-t="stock" data-i="${r._i}">✕</button></td></tr>`).join('');
   if(!rows.length) body=`<tr><td colspan="11" class="empty">Пока нет записей — добавьте остаток формой ниже</td></tr>`;
   document.getElementById('stockT').innerHTML=headRow([['gb','Б/У кашалоты'],['gn','Новые 2027']])+`<tbody>${body}</tbody>`;
 }
 
 function renderPlan(){
-  const rows=[...db.plan].sort(byDate);
+  const rows=indexed('plan').sort(byDate);
   let body=rows.map(r=>`<tr>
     <td>${fmtDate(r.date)}</td><td class="wd">${wd(r.date)}</td>
     ${ITEMS.map(([k],j)=>cell(r['n_'+k]).replace('<td class="','<td class="'+(j?'':'sep '))).join('')}
-    <td><button class="del" title="Удалить" data-t="plan" data-id="${r.id}">✕</button></td></tr>`).join('');
+    <td><button class="del" title="Удалить" data-t="plan" data-i="${r._i}">✕</button></td></tr>`).join('');
   if(rows.length){
     body+=`<tr><td class="tot">Итого</td><td></td>${ITEMS.map(([k],j)=>
       `<td class="tot ${j?'':'sep'}">${rows.reduce((s,r)=>s+n(r['n_'+k]),0)}</td>`).join('')}<td></td></tr>`;
@@ -215,13 +245,18 @@ function renderKpis(){
 
 function render(){renderStock();renderPlan();renderKpis()}
 
+function download(name,text,type){
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));
+  a.download=name;a.click();
+}
+
 function bindForm(id,table){
   document.getElementById(id).addEventListener('submit',e=>{
     e.preventDefault();
-    const r={id:Date.now().toString(36)};
+    const r={};
     new FormData(e.target).forEach((v,k)=>r[k]=k==='date'?v:n(v));
-    if(table==='stock'){db.stock=db.stock.filter(x=>x.date!==r.date)} // одна запись на дату
-    db[table].push(r);save();render();
+    COLS.forEach(k=>{if(!(k in r))r[k]=0});
+    change(table==='stock'?'addStock':'addPlan',r); // в наличии одна запись на дату
     e.target.reset();e.target.date.valueAsDate=new Date();
   });
 }
@@ -231,19 +266,20 @@ document.querySelectorAll('input[type=date]').forEach(i=>i.valueAsDate=new Date(
 document.addEventListener('click',e=>{
   const b=e.target.closest('.del');if(!b)return;
   if(!confirm('Удалить строку?'))return;
-  db[b.dataset.t]=db[b.dataset.t].filter(x=>x.id!==b.dataset.id);save();render();
+  const t=b.dataset.t;
+  change(t==='stock'?'delStock':'delPlan',db[t][b.dataset.i]);
 });
-document.getElementById('refresh').onclick=()=>{db=load();render()};
+document.getElementById('refresh').onclick=load;
+setInterval(()=>{if(SB_URL&&!document.hidden)load()},60000);
 
 document.getElementById('csv').onclick=()=>{
   const h=['Раздел','Дата','День недели',...ITEMS.map(([,t])=>'Б/У '+t),...ITEMS.map(([,t])=>'Новые 2027 '+t)];
   const line=(sec,r)=>[sec,fmtDate(r.date),wd(r.date),...ITEMS.map(([k])=>sec==='Наличие'?n(r['bu_'+k]):''),...ITEMS.map(([k])=>n(r['n_'+k]))].join(';');
   const csv='﻿'+[h.join(';'),...[...db.stock].sort(byDate).map(r=>line('Наличие',r)),...[...db.plan].sort(byDate).map(r=>line('Поступление',r))].join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download='nalichie_kashalot.csv';a.click();
+  download('nalichie_kashalot.csv',csv,'text/csv');
 };
 
-render();
+load();
 </script>
 </body>
 </html>
