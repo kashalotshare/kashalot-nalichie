@@ -237,10 +237,10 @@ function render(){
   const mini=eq=>`<div class="mini">${EQ.map(([k,t])=>`<div><span>${t}</span><b>${eq[k]}</b></div>`).join('')}</div>`;
   const allEq=Object.fromEntries(EQ.map(([k])=>[k,snaps[0].eq[k]+snaps[1].eq[k]]));
   document.getElementById('kpis').innerHTML=CATS.map((c,i)=>`<div class="kpi" style="--c:${c.c}">
-      <div class="t">${c.title}</div><div class="v">${snaps[i].total} <small>кашалотов</small></div>
+      <div class="t">${c.title}</div><div class="v">${snaps[i].total} <small>шт.</small></div>
       <div class="s">Хард <b>${snaps[i].hard}</b> · Софт <b>${snaps[i].soft}</b>${c.id==='new2027'&&planKs?` · <b class="p">+${planKs} придёт</b>`:''}</div>
       ${mini(snaps[i].eq)}</div>`).join('')+
-    `<div class="kpi"><div class="t">Всего</div><div class="v">${snaps[0].total+snaps[1].total} <small>кашалотов</small></div>
+    `<div class="kpi"><div class="t">Всего</div><div class="v">${snaps[0].total+snaps[1].total} <small>шт.</small></div>
       <div class="s">Хард <b>${snaps[0].hard+snaps[1].hard}</b> · Софт <b>${snaps[0].soft+snaps[1].soft}</b></div>
       ${mini(allEq)}</div>`;
 
