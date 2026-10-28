@@ -8,7 +8,7 @@
   :root{
     --bg:#0f1115; --side:#12151b; --card:#161a21; --card2:#1b2029; --line:#262c36;
     --text:#e8ebf0; --muted:#7d8694; --accent:#34d27b; --accent2:#2bb86a;
-    --bu:#f2c94c; --new:#5aa9ff; --beach:#b98cff; --danger:#ff6b6b;
+    --bu:#f2c94c; --new:#5aa9ff; --danger:#ff6b6b;
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
@@ -25,28 +25,47 @@
   .nav i{font-style:normal;width:20px;text-align:center}
   /* main */
   main{flex:1;min-width:0;padding:44px 44px 60px;overflow:auto}
-  .head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+  .head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--line)}
   h1{margin:0;font-size:28px}
   .sub{color:var(--muted);margin-top:4px}
   .btn{background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 18px;font:inherit;cursor:pointer}
   .btn:hover{border-color:#3a4250}
   .btn.pri{background:var(--accent);border-color:var(--accent);color:#06130b;font-weight:600}
   .btn.pri:hover{background:var(--accent2)}
-  .intro{color:var(--muted);margin:22px 0 26px;max-width:1100px}
+  .tools{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  select{background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px 12px;font:inherit;min-width:150px}
+  .f{display:flex;flex-direction:column;gap:4px}
+  .f label{font-size:12px;color:var(--muted)}
+  .f input{background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px 10px;font:inherit;width:96px}
+  .f input[type=date]{width:150px;color-scheme:dark}
+  input:focus,select:focus{outline:none;border-color:var(--accent)}
   /* kpi */
-  .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:28px}
-  .kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+  .kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:26px 0 28px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;position:relative;overflow:hidden}
+  .kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c,var(--accent))}
   .kpi .t{color:var(--muted);font-size:13px}
-  .kpi .v{font-size:32px;font-weight:700;margin:4px 0 6px}
+  .kpi .v{font-size:34px;font-weight:700;margin:4px 0 6px}
+  .kpi .v small{font-size:15px;color:var(--muted);font-weight:400}
   .kpi .s{font-size:13px;color:var(--muted)}
-  .kpi .s b{font-weight:600}
-  .kpi .s .b{color:var(--bu)} .kpi .s .n{color:var(--new)} .kpi .s .p{color:var(--accent)}
+  .kpi .s b{color:var(--text);font-weight:600}
+  .kpi .s .p{color:var(--accent)}
+  .mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+  .mini div{display:flex;flex-direction:column}
+  .mini span{font-size:12px;color:var(--muted)}
+  .mini b{font-size:20px}
   /* panels */
   .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 28px;margin-bottom:26px}
-  .panel h2{margin:0 0 4px;font-size:18px}
+  .panel h2{margin:0 0 4px;font-size:18px;display:flex;align-items:center;gap:10px}
+  .panel h2 .badge{font-size:13px;font-weight:600;padding:2px 10px;border-radius:999px;background:var(--card2);border:1px solid var(--line)}
   .panel .ph{color:var(--muted);font-size:14px;margin-bottom:18px}
+  .panel.bu{border-top:3px solid var(--bu)} .panel.nw{border-top:3px solid var(--new)}
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:20px;align-items:start}
+  .side{display:flex;flex-direction:column;gap:12px}
+  .eq{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+  .eq span{color:var(--muted);font-size:14px}
+  .eq b{font-size:24px}
   .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
-  table{border-collapse:collapse;width:100%;min-width:900px}
+  table{border-collapse:collapse;width:100%}
   th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
   th{font-size:13px;font-weight:600;color:#c9ced6;background:var(--card2)}
   th.g{font-size:14px;color:#fff}
@@ -57,42 +76,29 @@
   td.wd{color:var(--muted)}
   td.zero{color:#4b5260}
   td.tot{font-weight:700}
-  tr.last td{background:rgba(52,210,123,.07)}
-  .tag{display:inline-block;font-size:11px;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:1px 8px;margin-left:8px}
-  .del{background:none;border:0;color:var(--muted);cursor:pointer;font-size:16px;padding:2px 6px;border-radius:6px}
-  .del:hover{color:var(--danger);background:#2a1c1f}
-  .empty{color:var(--muted);text-align:center;padding:28px}
-  /* form */
-  form.add{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:18px;padding-top:18px;border-top:1px dashed var(--line)}
-  .f{display:flex;flex-direction:column;gap:4px}
-  .f label{font-size:12px;color:var(--muted)}
-  .f input{background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px 10px;font:inherit;width:96px}
-  .f input[type=date]{width:150px;color-scheme:dark}
-  .f input:focus{outline:none;border-color:var(--accent)}
-  .fg{display:flex;gap:8px;padding:8px 10px 10px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
-  .fg>span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
-  .fg.b{border-color:rgba(242,201,76,.35)} .fg.n{border-color:rgba(90,169,255,.35)}
-  .tools{display:flex;gap:10px;flex-wrap:wrap}
-  /* цвета */
-  .ptitle{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
-  select{background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px 10px;font:inherit;min-width:150px}
+  tr.itogo td{font-weight:700;background:var(--card2)}
   .dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:10px;vertical-align:-1px;border:1px solid rgba(255,255,255,.25)}
   .kt{display:inline-block;font-size:11px;padding:1px 8px;border-radius:999px;margin-left:8px;border:1px solid var(--line);color:var(--muted)}
   .kt.h{border-color:rgba(242,201,76,.5);color:var(--bu)} .kt.s{border-color:rgba(90,169,255,.5);color:var(--new)}
-  tr.itogo td{font-weight:700;background:var(--card2)}
   .csum{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
   .csum span{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-size:14px}
-  .csum b{font-size:16px}
-  .cedit{margin-top:18px;padding-top:16px;border-top:1px dashed var(--line)}
-  .cedit summary{cursor:pointer;color:var(--accent);font-weight:600}
-  #colorF input{background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:6px 8px;width:80px;font:inherit;text-align:center}
-  #colorF input:focus{outline:none;border-color:var(--accent)}
-  .hint{color:var(--muted);font-size:13px;margin-bottom:10px}
+  .del{background:none;border:0;color:var(--muted);cursor:pointer;font-size:16px;padding:2px 6px;border-radius:6px}
+  .del:hover{color:var(--danger);background:#2a1c1f}
+  .empty{color:var(--muted);text-align:center;padding:28px}
+  /* editor */
+  .editor[hidden]{display:none}
+  .editor h3{margin:22px 0 10px;font-size:16px}
+  .editor h3.bu{color:var(--bu)} .editor h3.nw{color:var(--new)}
+  .grid input{background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:6px 8px;width:76px;font:inherit;text-align:center}
+  .eqrow{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+  .hint{color:var(--muted);font-size:13px}
+  form.add{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:18px;padding-top:18px;border-top:1px dashed var(--line)}
+  @media (max-width:1000px){ .cols{grid-template-columns:1fr} .side{flex-direction:row;flex-wrap:wrap} .eq{flex:1 1 150px} }
   @media (max-width:900px){
     body{flex-direction:column} aside{width:auto;min-height:0;flex:none}
     aside .navs{display:flex;overflow-x:auto} .grp{display:none}
     main{padding:24px 16px}
-    .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .kpis{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -114,85 +120,76 @@
 
 <main>
   <div class="head">
-    <div><h1>Наличие</h1><div class="sub">Кашалоты, АКБ, зарядные устройства и пляжные модули на складе</div><div class="sub" id="status" style="font-size:13px"></div></div>
+    <div><h1>Наличие</h1><div class="sub">Кашалоты по цветам и каткам, АКБ, ЗУ и пляжные модули на складе</div>
+      <div class="sub" id="status" style="font-size:13px"></div></div>
     <div class="tools">
-      <button class="btn" id="csv">⤓ Скачать CSV</button>
+      <div class="f"><label>Остатки на дату</label><select id="view"></select></div>
+      <button class="btn pri" id="editBtn">✎ Внести остатки</button>
+      <button class="btn" id="csv">⤓ CSV</button>
       <button class="btn" id="refresh">⟳ Обновить</button>
     </div>
   </div>
 
-  <div class="intro">Остатки по дням: Б/У и новые 2027 отдельно. Ниже — планируемые поступления новой техники. Карточки сверху показывают последний остаток и что ещё придёт.</div>
+  <section class="panel editor" id="editor" hidden>
+    <h2>Внести остатки</h2>
+    <div class="ph">Пустые клетки = 0. Если на дату уже есть остатки, они заменятся.</div>
+    <div class="f"><label>Дата</label><input type="date" id="eDate"></div>
+    <div class="hint" id="eHint" style="margin-top:8px"></div>
+    <div id="eBody"></div>
+    <div class="tools" style="margin-top:18px">
+      <button class="btn pri" id="eSave">Сохранить остатки</button>
+      <button class="btn" id="eCancel">Отмена</button>
+    </div>
+  </section>
 
   <div class="kpis" id="kpis"></div>
 
-  <section class="panel">
-    <h2>Наличие на складе</h2>
-    <div class="ph">Каждая строка — остаток на дату. Последняя запись подсвечена.</div>
-    <div class="tablewrap"><table id="stockT"></table></div>
-    <form class="add" id="stockF">
-      <div class="f"><label>Дата</label><input type="date" name="date" required></div>
-      <div class="fg b"><span>Б/У</span>
-        <div class="f"><label>Кашалоты</label><input type="number" min="0" name="bu_ks" placeholder="0"></div>
-        <div class="f"><label>АКБ</label><input type="number" min="0" name="bu_akb" placeholder="0"></div>
-        <div class="f"><label>ЗУ</label><input type="number" min="0" name="bu_zu" placeholder="0"></div>
-        <div class="f"><label>Пляжн. модули</label><input type="number" min="0" name="bu_pm" placeholder="0"></div>
-      </div>
-      <div class="fg n"><span>Новые</span>
-        <div class="f"><label>Кашалоты</label><input type="number" min="0" name="n_ks" placeholder="0"></div>
-        <div class="f"><label>АКБ</label><input type="number" min="0" name="n_akb" placeholder="0"></div>
-        <div class="f"><label>ЗУ</label><input type="number" min="0" name="n_zu" placeholder="0"></div>
-        <div class="f"><label>Пляжн. модули</label><input type="number" min="0" name="n_pm" placeholder="0"></div>
-      </div>
-      <button class="btn pri">+ Добавить остаток</button>
-    </form>
-  </section>
-
-  <section class="panel">
-    <div class="ptitle">
-      <div><h2>Кашалоты по цветам</h2><div class="ph">Остатки по цвету, катку (софт / хард) и рулю.</div></div>
-      <div class="f"><label>Остатки на дату</label><select id="cView"></select></div>
-    </div>
-    <div class="tablewrap"><table id="colorT" style="min-width:560px"></table></div>
-    <div class="csum" id="colorSum"></div>
-    <details class="cedit" id="colorEdit">
-      <summary>✎ Внести / обновить остатки по цветам</summary>
-      <div class="f" style="margin:14px 0"><label>Дата</label><input type="date" id="cfDate"></div>
-      <div class="hint" id="cfHint"></div>
-      <div class="tablewrap"><table id="colorF" style="min-width:640px"></table></div>
-      <div style="margin-top:14px"><button class="btn pri" id="cfSave">Сохранить остатки на дату</button></div>
-    </details>
-  </section>
+  <div id="cats"></div>
 
   <section class="panel">
     <h2>Планируемое поступление</h2>
     <div class="ph">Новые 2027 — что и когда ожидаем на склад.</div>
-    <div class="tablewrap"><table id="planT"></table></div>
+    <div class="tablewrap"><table id="planT" style="min-width:640px"></table></div>
     <form class="add" id="planF">
       <div class="f"><label>Дата</label><input type="date" name="date" required></div>
-      <div class="fg n"><span>Новые</span>
-        <div class="f"><label>Кашалоты</label><input type="number" min="0" name="n_ks" placeholder="0"></div>
-        <div class="f"><label>АКБ</label><input type="number" min="0" name="n_akb" placeholder="0"></div>
-        <div class="f"><label>ЗУ</label><input type="number" min="0" name="n_zu" placeholder="0"></div>
-        <div class="f"><label>Пляжн. модули</label><input type="number" min="0" name="n_pm" placeholder="0"></div>
-      </div>
+      <div class="f"><label>Кашалоты</label><input type="number" min="0" name="n_ks" placeholder="0"></div>
+      <div class="f"><label>АКБ</label><input type="number" min="0" name="n_akb" placeholder="0"></div>
+      <div class="f"><label>ЗУ</label><input type="number" min="0" name="n_zu" placeholder="0"></div>
+      <div class="f"><label>Пляжн. модули</label><input type="number" min="0" name="n_pm" placeholder="0"></div>
       <button class="btn pri">+ Добавить поступление</button>
     </form>
   </section>
 </main>
 
 <script>
-// Общие данные — таблица nalichie в Supabase (kind: stock — остаток, plan — поступление).
+// Данные — Supabase:
+//  kashalot_colors: date, cat (bu2026 / new2027), color, katok (Хард / Софт), rul_cel, rul_skl
+//  nalichie: kind=stock — АКБ/ЗУ/пляжные модули на дату (bu_* — Б/У 2026, n_* — Новый 2027); kind=plan — поступления
 const SB_URL='https://uemsjyfavpaqibibfydm.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbXNqeWZhdnBhcWliaWJmeWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxOTU3NTMsImV4cCI6MjEwODc3MTc1M30.OqZenxOuhwzoBzvP7mjUJiD1nweq7eopjkJY3bfd4ko'; // anon public
-const ITEMS=[['ks','Кашалоты'],['akb','АКБ'],['zu','ЗУ'],['pm','Пляжные модули']];
-const WD=['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
-const COLS=['bu_ks','bu_akb','bu_zu','bu_pm','n_ks','n_akb','n_zu','n_pm'];
 
-let db={stock:[],plan:[]};
+const CATS=[
+  {id:'bu2026', title:'Б/У как новый 2026', pre:'bu_', cls:'bu', c:'var(--bu)'},
+  {id:'new2027',title:'Новый 2027',         pre:'n_',  cls:'nw', c:'var(--new)'},
+];
+const COLORS=[['Фиолетовый','#8e6cf0'],['Салатовый','#a3e05a'],['Бирюзовый','#2ec4b6'],['Голубой','#5ab8ff'],
+  ['Белый','#f1f3f5'],['Синий','#2f5fe0'],['Красный','#e5484d'],['Жёлтый','#f5c84c']];
+const KATOK=['Хард','Софт'];
+const EQ=[['akb','АКБ'],['zu','ЗУ'],['pm','Пляжные модули']];
+const WD=['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+
+let colors=[], stock=[], plan=[], view='';
+
+const n=v=>Number(v)||0;
+const fmtDate=s=>{const [y,m,d]=s.split('-');return `${d}.${m}.${y}`};
+const wd=s=>WD[new Date(s+'T00:00:00').getDay()];
+const cell=v=>`<td class="${n(v)?'':'zero'}">${n(v)}</td>`;
+const byDate=(a,b)=>a.date.localeCompare(b.date);
 const now=()=>new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+const ktag=k=>`<span class="kt ${k==='Хард'?'h':'s'}">${k}</span>`;
 function status(t,err){const s=document.getElementById('status');s.textContent=t;s.style.color=err?'var(--danger)':''}
 
-async function sb(path,opt={},table='nalichie'){
+async function sb(table,path,opt={}){
   const r=await fetch(`${SB_URL}/rest/v1/${table}${path}`,{...opt,headers:{
     apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json',Prefer:'return=minimal'}});
   if(!r.ok)throw new Error((await r.text())||r.status);
@@ -200,183 +197,175 @@ async function sb(path,opt={},table='nalichie'){
 }
 
 async function load(){
-  if(!SB_URL){status('База не подключена',true);return render()}
   status('Загружаю…');
   try{
-    const rows=await sb('?select=*&order=date');
-    db={stock:rows.filter(r=>r.kind==='stock'),plan:rows.filter(r=>r.kind==='plan')};
+    const [c,s]=await Promise.all([sb('kashalot_colors','?select=*&order=date'),sb('nalichie','?select=*&order=date')]);
+    colors=c; stock=s.filter(r=>r.kind==='stock'); plan=s.filter(r=>r.kind==='plan');
     status('Общие данные · обновлено в '+now());
   }catch(e){status('Не удалось загрузить данные: '+e.message,true)}
-  try{colors=await sb('?select=*&order=date',{},'kashalot_colors');colorsErr=''}
-  catch(e){colorsErr='Таблица цветов ещё не создана в Supabase'}
   render();
 }
-async function change(op,row){
-  status('Сохраняю…');
-  try{
-    if(op==='addStock'){ // в наличии одна запись на дату
-      await sb(`?kind=eq.stock&date=eq.${row.date}`,{method:'DELETE'});
-      await sb('',{method:'POST',body:JSON.stringify({...row,kind:'stock'})});
-    }
-    if(op==='addPlan')await sb('',{method:'POST',body:JSON.stringify({...row,kind:'plan'})});
-    if(op==='delStock'||op==='delPlan')await sb(`?id=eq.${row.id}`,{method:'DELETE'});
-  }catch(e){status('Ошибка сохранения: '+e.message,true);return}
-  load();
+
+// все даты, на которые есть остатки
+const dates=()=>[...new Set([...colors,...stock].map(r=>r.date))].sort().reverse();
+
+// раскладка категории на дату
+function snapshot(date,cat){
+  const rows=[];
+  COLORS.forEach(([c,hex])=>KATOK.forEach(k=>{
+    const r=colors.find(x=>x.date===date&&x.cat===cat.id&&x.color===c&&x.katok===k);
+    if(r&&n(r.rul_cel)+n(r.rul_skl))rows.push({c,hex,k,cel:n(r.rul_cel),skl:n(r.rul_skl)});
+  }));
+  const st=stock.find(x=>x.date===date)||{};
+  const eq=Object.fromEntries(EQ.map(([k])=>[k,n(st[cat.pre+k])]));
+  const sum=f=>rows.reduce((s,r)=>s+f(r),0);
+  return {rows,eq,total:sum(r=>r.cel+r.skl),cel:sum(r=>r.cel),skl:sum(r=>r.skl),
+    hard:sum(r=>r.k==='Хард'?r.cel+r.skl:0),soft:sum(r=>r.k==='Софт'?r.cel+r.skl:0)};
 }
 
-const n=v=>Number(v)||0;
-const fmtDate=s=>{const [y,m,d]=s.split('-');return `${d}.${m}.${y}`};
-const wd=s=>WD[new Date(s+'T00:00:00').getDay()];
-const cell=v=>`<td class="${n(v)?'':'zero'}">${n(v)}</td>`;
-const byDate=(a,b)=>a.date.localeCompare(b.date);
-const indexed=t=>db[t].map((r,i)=>({...r,_i:i}));
+function render(){
+  const ds=dates();
+  if(!ds.includes(view))view=ds[0]||'';
+  document.getElementById('view').innerHTML=ds.length
+    ?ds.map(d=>`<option value="${d}" ${d===view?'selected':''}>${fmtDate(d)}</option>`).join('')
+    :'<option>нет данных</option>';
 
-function headRow(groups){
-  const top=`<tr><th rowspan="2">Дата</th><th rowspan="2">День недели</th>${
-    groups.map(([cls,t])=>`<th colspan="4" class="g ${cls} sep">${t}</th>`).join('')}<th rowspan="2"></th></tr>`;
-  const sub=`<tr>${groups.map(()=>ITEMS.map(([,t],i)=>`<th class="${i?'':'sep'}">${t}</th>`).join('')).join('')}</tr>`;
-  return `<thead>${top}${sub}</thead>`;
-}
+  const snaps=CATS.map(c=>snapshot(view,c));
+  const planKs=plan.reduce((s,r)=>s+n(r.n_ks),0);
 
-function renderStock(){
-  const rows=indexed('stock').sort(byDate).reverse();
-  let body=rows.map((r,i)=>`<tr class="${i?'':'last'}">
-    <td>${fmtDate(r.date)}${i?'':'<span class="tag">последний</span>'}</td><td class="wd">${wd(r.date)}</td>
-    ${ITEMS.map(([k],j)=>cell(r['bu_'+k]).replace('<td class="','<td class="'+(j?'':'sep ')))
-      .join('')}
-    ${ITEMS.map(([k],j)=>cell(r['n_'+k]).replace('<td class="','<td class="'+(j?'':'sep ')))
-      .join('')}
-    <td><button class="del" title="Удалить" data-t="stock" data-i="${r._i}">✕</button></td></tr>`).join('');
-  if(!rows.length) body=`<tr><td colspan="11" class="empty">Пока нет записей — добавьте остаток формой ниже</td></tr>`;
-  document.getElementById('stockT').innerHTML=headRow([['gb','Б/У кашалоты'],['gn','Новые 2027']])+`<tbody>${body}</tbody>`;
+  // карточки сверху: по категориям и сумма
+  const mini=eq=>`<div class="mini">${EQ.map(([k,t])=>`<div><span>${t}</span><b>${eq[k]}</b></div>`).join('')}</div>`;
+  const allEq=Object.fromEntries(EQ.map(([k])=>[k,snaps[0].eq[k]+snaps[1].eq[k]]));
+  document.getElementById('kpis').innerHTML=CATS.map((c,i)=>`<div class="kpi" style="--c:${c.c}">
+      <div class="t">${c.title}</div><div class="v">${snaps[i].total} <small>кашалотов</small></div>
+      <div class="s">Хард <b>${snaps[i].hard}</b> · Софт <b>${snaps[i].soft}</b>${c.id==='new2027'&&planKs?` · <b class="p">+${planKs} придёт</b>`:''}</div>
+      ${mini(snaps[i].eq)}</div>`).join('')+
+    `<div class="kpi"><div class="t">Всего</div><div class="v">${snaps[0].total+snaps[1].total} <small>кашалотов</small></div>
+      <div class="s">Хард <b>${snaps[0].hard+snaps[1].hard}</b> · Софт <b>${snaps[0].soft+snaps[1].soft}</b></div>
+      ${mini(allEq)}</div>`;
+
+  // блоки категорий: цвета + рядом АКБ / ЗУ / пляжные модули
+  document.getElementById('cats').innerHTML=CATS.map((c,i)=>{
+    const s=snaps[i];
+    let body=s.rows.map(r=>`<tr><td><span class="dot" style="background:${r.hex}"></span>${r.c}${ktag(r.k)}</td>
+      ${cell(r.cel)}${cell(r.skl)}<td class="tot">${r.cel+r.skl}</td></tr>`).join('');
+    if(s.rows.length)body+=`<tr class="itogo"><td>ИТОГО</td><td>${s.cel}</td><td>${s.skl}</td><td>${s.total}</td></tr>`;
+    else body=`<tr><td colspan="4" class="empty">Нет остатков — нажмите «✎ Внести остатки»</td></tr>`;
+    return `<section class="panel ${c.cls}">
+      <h2>${c.title} <span class="badge">${s.total} шт.</span></h2>
+      <div class="ph">${view?'Остатки на '+fmtDate(view):'Остатков пока нет'}</div>
+      <div class="cols">
+        <div>
+          <div class="tablewrap"><table style="min-width:480px"><thead><tr><th>Цвет / Каток</th><th>Цельный руль</th><th>Складной</th><th>Всего</th></tr></thead><tbody>${body}</tbody></table></div>
+          ${s.rows.length?`<div class="csum"><span>Хард — <b>${s.hard}</b> шт.</span><span>Софт — <b>${s.soft}</b> шт.</span></div>`:''}
+        </div>
+        <div class="side">${EQ.map(([k,t])=>`<div class="eq"><span>${t}</span><b>${s.eq[k]}</b></div>`).join('')}</div>
+      </div></section>`;
+  }).join('');
+
+  renderPlan();
 }
 
 function renderPlan(){
-  const rows=indexed('plan').sort(byDate);
-  let body=rows.map(r=>`<tr>
-    <td>${fmtDate(r.date)}</td><td class="wd">${wd(r.date)}</td>
-    ${ITEMS.map(([k],j)=>cell(r['n_'+k]).replace('<td class="','<td class="'+(j?'':'sep '))).join('')}
-    <td><button class="del" title="Удалить" data-t="plan" data-i="${r._i}">✕</button></td></tr>`).join('');
-  if(rows.length){
-    body+=`<tr><td class="tot">Итого</td><td></td>${ITEMS.map(([k],j)=>
-      `<td class="tot ${j?'':'sep'}">${rows.reduce((s,r)=>s+n(r['n_'+k]),0)}</td>`).join('')}<td></td></tr>`;
-  } else body=`<tr><td colspan="7" class="empty">Поступлений не запланировано</td></tr>`;
-  const t=document.getElementById('planT');
-  t.innerHTML=headRow([['gn','Новые 2027']])+`<tbody>${body}</tbody>`;
-  t.style.minWidth='640px';
+  const rows=[...plan].sort(byDate);
+  const items=[['n_ks','Кашалоты'],['n_akb','АКБ'],['n_zu','ЗУ'],['n_pm','Пляжные модули']];
+  let body=rows.map(r=>`<tr><td>${fmtDate(r.date)}</td><td class="wd">${wd(r.date)}</td>
+    ${items.map(([k])=>cell(r[k])).join('')}
+    <td><button class="del" title="Удалить" data-id="${r.id}">✕</button></td></tr>`).join('');
+  if(rows.length)body+=`<tr class="itogo"><td>Итого</td><td></td>${items.map(([k])=>`<td>${rows.reduce((s,r)=>s+n(r[k]),0)}</td>`).join('')}<td></td></tr>`;
+  else body=`<tr><td colspan="7" class="empty">Поступлений не запланировано</td></tr>`;
+  document.getElementById('planT').innerHTML=`<thead><tr><th>Дата</th><th>День недели</th>${items.map(([,t])=>`<th>${t}</th>`).join('')}<th></th></tr></thead><tbody>${body}</tbody>`;
 }
 
-function renderKpis(){
-  const last=[...db.stock].sort(byDate).pop()||{};
-  document.getElementById('kpis').innerHTML=ITEMS.map(([k,t])=>{
-    const bu=n(last['bu_'+k]), nw=n(last['n_'+k]);
-    const pl=db.plan.reduce((s,r)=>s+n(r['n_'+k]),0);
-    return `<div class="kpi"><div class="t">${t}</div><div class="v">${bu+nw}</div>
-      <div class="s"><b class="b">Б/У ${bu}</b> · <b class="n">Новые ${nw}</b>${pl?` · <b class="p">+${pl} придёт</b>`:''}</div></div>`;
-  }).join('');
+// ---- редактор остатков ----
+function fillEditor(){
+  const d=document.getElementById('eDate').value;
+  const has=dates().includes(d), src=has?d:dates()[0];
+  document.getElementById('eHint').textContent=has?'На эту дату остатки уже есть — исправьте и сохраните.'
+    :src?`Подставлены остатки на ${fmtDate(src)} — поменяйте, что изменилось.`:'';
+  const st=stock.find(x=>x.date===src)||{};
+  const val=(cat,c,k,f)=>{const r=colors.find(x=>x.date===src&&x.cat===cat&&x.color===c&&x.katok===k);return r&&n(r[f])?n(r[f]):''};
+  document.getElementById('eBody').innerHTML=CATS.map(cat=>`<h3 class="${cat.cls}">${cat.title}</h3>
+    <div class="tablewrap"><table class="grid" style="min-width:620px"><thead>
+      <tr><th rowspan="2">Цвет</th>${KATOK.map((k,i)=>`<th colspan="2" class="g ${i?'gn':'gb'} sep">${k}</th>`).join('')}</tr>
+      <tr>${KATOK.map(()=>'<th class="sep">Цельный руль</th><th>Складной</th>').join('')}</tr></thead><tbody>
+      ${COLORS.map(([c,hex])=>`<tr><td><span class="dot" style="background:${hex}"></span>${c}</td>${KATOK.map(k=>
+        ['rul_cel','rul_skl'].map((f,j)=>`<td class="${j?'':'sep'}"><input type="number" min="0" placeholder="0"
+          data-cat="${cat.id}" data-c="${c}" data-k="${k}" data-f="${f}" value="${val(cat.id,c,k,f)}"></td>`).join('')).join('')}</tr>`).join('')}
+    </tbody></table></div>
+    <div class="eqrow">${EQ.map(([k,t])=>`<div class="f"><label>${t}</label><input type="number" min="0" placeholder="0"
+      data-eq="${cat.pre+k}" value="${n(st[cat.pre+k])||''}"></div>`).join('')}</div>`).join('');
 }
 
-// ---- Кашалоты по цветам (таблица kashalot_colors: date, color, katok, rul_cel, rul_skl) ----
-const COLORS=[['Фиолетовый','#8e6cf0'],['Салатовый','#a3e05a'],['Бирюзовый','#2ec4b6'],['Голубой','#5ab8ff'],
-  ['Белый','#f1f3f5'],['Синий','#2f5fe0'],['Красный','#e5484d'],['Жёлтый','#f5c84c']];
-const KATOK=['Хард','Софт'];
-let colors=[], colorsErr='', cView='';
-const colorDates=()=>[...new Set(colors.map(r=>r.date))].sort().reverse();
-const snap=d=>colors.filter(r=>r.date===d);
-const ktag=k=>`<span class="kt ${k==='Хард'?'h':'s'}">${k}</span>`;
-
-function renderColors(){
-  const dates=colorDates();
-  if(!dates.includes(cView))cView=dates[0]||'';
-  document.getElementById('cView').innerHTML=dates.length
-    ?dates.map(d=>`<option value="${d}" ${d===cView?'selected':''}>${fmtDate(d)}</option>`).join('')
-    :'<option>—</option>';
-  const rows=[];
-  COLORS.forEach(([c,hex])=>KATOK.forEach(k=>{
-    const r=snap(cView).find(x=>x.color===c&&x.katok===k);
-    if(r&&n(r.rul_cel)+n(r.rul_skl))rows.push({c,hex,k,cel:n(r.rul_cel),skl:n(r.rul_skl)});
-  }));
-  const sum=f=>rows.reduce((s,r)=>s+f(r),0);
-  let body=rows.map(r=>`<tr><td><span class="dot" style="background:${r.hex}"></span>${r.c}${ktag(r.k)}</td>
-    ${cell(r.cel)}${cell(r.skl)}<td class="tot">${r.cel+r.skl}</td></tr>`).join('');
-  if(rows.length)body+=`<tr class="itogo"><td>ИТОГО</td><td>${sum(r=>r.cel)}</td><td>${sum(r=>r.skl)}</td><td>${sum(r=>r.cel+r.skl)}</td></tr>`;
-  else body=`<tr><td colspan="4" class="empty">${colorsErr||'Пока нет остатков по цветам — внесите их ниже'}</td></tr>`;
-  document.getElementById('colorT').innerHTML=`<thead><tr><th>Цвет / Тип</th><th>Цельный руль</th><th>Складной</th><th>Всего</th></tr></thead><tbody>${body}</tbody>`;
-  document.getElementById('colorSum').innerHTML=rows.length?
-    `<span>Всего: <b>${sum(r=>r.cel+r.skl)}</b> шт.</span>`+KATOK.map(k=>`<span>${k} — <b>${sum(r=>r.k===k?r.cel+r.skl:0)}</b> шт.</span>`).join(''):'';
-}
-
-function fillColorForm(){
-  const d=document.getElementById('cfDate').value, own=snap(d), last=colorDates()[0];
-  const src=own.length?own:snap(last);
-  document.getElementById('cfHint').textContent=own.length?'На эту дату остатки уже есть — исправьте и сохраните.'
-    :src.length?`Подставлены остатки на ${fmtDate(last)} — поменяйте, что изменилось.`:'Заполните количество, пустые клетки = 0.';
-  const v=(c,k,f)=>{const r=src.find(x=>x.color===c&&x.katok===k);return r&&n(r[f])?n(r[f]):''};
-  document.getElementById('colorF').innerHTML=`<thead><tr><th rowspan="2">Цвет</th>${KATOK.map((k,i)=>`<th colspan="2" class="g ${i?'gn':'gb'} sep">${k}</th>`).join('')}</tr>
-    <tr>${KATOK.map(()=>'<th class="sep">Цельный руль</th><th>Складной</th>').join('')}</tr></thead><tbody>${
-    COLORS.map(([c,hex])=>`<tr><td><span class="dot" style="background:${hex}"></span>${c}</td>${KATOK.map(k=>
-      ['rul_cel','rul_skl'].map((f,j)=>`<td class="${j?'':'sep'}"><input type="number" min="0" placeholder="0" data-c="${c}" data-k="${k}" data-f="${f}" value="${v(c,k,f)}"></td>`).join('')).join('')}</tr>`).join('')}</tbody>`;
-}
-
-async function saveColors(){
-  const d=document.getElementById('cfDate').value;if(!d)return alert('Выберите дату');
-  const rows={};
-  document.querySelectorAll('#colorF input').forEach(i=>{
-    const key=i.dataset.c+'|'+i.dataset.k;
-    rows[key]=rows[key]||{date:d,color:i.dataset.c,katok:i.dataset.k,rul_cel:0,rul_skl:0};
+async function saveEditor(){
+  const d=document.getElementById('eDate').value;if(!d)return alert('Выберите дату');
+  const rows={}, st={kind:'stock',date:d,bu_ks:0,n_ks:0};
+  document.querySelectorAll('#eBody input[data-cat]').forEach(i=>{
+    const key=[i.dataset.cat,i.dataset.c,i.dataset.k].join('|');
+    rows[key]=rows[key]||{date:d,cat:i.dataset.cat,color:i.dataset.c,katok:i.dataset.k,rul_cel:0,rul_skl:0};
     rows[key][i.dataset.f]=n(i.value);
   });
+  document.querySelectorAll('#eBody input[data-eq]').forEach(i=>st[i.dataset.eq]=n(i.value));
   const list=Object.values(rows).filter(r=>r.rul_cel+r.rul_skl);
+  list.forEach(r=>st[r.cat==='bu2026'?'bu_ks':'n_ks']+=r.rul_cel+r.rul_skl);
   status('Сохраняю…');
-  try{
-    await sb(`?date=eq.${d}`,{method:'DELETE'},'kashalot_colors'); // одна раскладка на дату
-    if(list.length)await sb('',{method:'POST',body:JSON.stringify(list)},'kashalot_colors');
+  try{ // одна раскладка на дату: старое удаляем, новое записываем
+    await sb('kashalot_colors',`?date=eq.${d}`,{method:'DELETE'});
+    await sb('nalichie',`?kind=eq.stock&date=eq.${d}`,{method:'DELETE'});
+    if(list.length)await sb('kashalot_colors','',{method:'POST',body:JSON.stringify(list)});
+    await sb('nalichie','',{method:'POST',body:JSON.stringify(st)});
   }catch(e){return status('Ошибка сохранения: '+e.message,true)}
-  cView=d;document.getElementById('colorEdit').open=false;load();
-}
-document.getElementById('cView').onchange=e=>{cView=e.target.value;renderColors()};
-document.getElementById('cfDate').onchange=fillColorForm;
-document.getElementById('cfSave').onclick=saveColors;
-document.getElementById('colorEdit').addEventListener('toggle',e=>{if(e.target.open)fillColorForm()});
-document.getElementById('cfDate').valueAsDate=new Date();
-
-function render(){renderStock();renderPlan();renderKpis();renderColors()}
-
-function download(name,text,type){
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));
-  a.download=name;a.click();
+  view=d;document.getElementById('editor').hidden=true;load();
 }
 
-function bindForm(id,table){
-  document.getElementById(id).addEventListener('submit',e=>{
-    e.preventDefault();
-    const r={};
-    new FormData(e.target).forEach((v,k)=>r[k]=k==='date'?v:n(v));
-    COLS.forEach(k=>{if(!(k in r))r[k]=0});
-    change(table==='stock'?'addStock':'addPlan',r); // в наличии одна запись на дату
-    e.target.reset();e.target.date.valueAsDate=new Date();
-  });
-}
-bindForm('stockF','stock');bindForm('planF','plan');
-document.querySelectorAll('input[type=date]').forEach(i=>i.valueAsDate=new Date());
+document.getElementById('editBtn').onclick=()=>{
+  const ed=document.getElementById('editor');ed.hidden=!ed.hidden;
+  if(!ed.hidden){document.getElementById('eDate').valueAsDate=new Date();fillEditor();ed.scrollIntoView({behavior:'smooth'})}
+};
+document.getElementById('eDate').onchange=fillEditor;
+document.getElementById('eSave').onclick=saveEditor;
+document.getElementById('eCancel').onclick=()=>document.getElementById('editor').hidden=true;
+document.getElementById('view').onchange=e=>{view=e.target.value;render()};
 
-document.addEventListener('click',e=>{
-  const b=e.target.closest('.del');if(!b)return;
-  if(!confirm('Удалить строку?'))return;
-  const t=b.dataset.t;
-  change(t==='stock'?'delStock':'delPlan',db[t][b.dataset.i]);
+// ---- поступления ----
+document.getElementById('planF').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const r={kind:'plan'};
+  new FormData(e.target).forEach((v,k)=>r[k]=k==='date'?v:n(v));
+  status('Сохраняю…');
+  try{await sb('nalichie','',{method:'POST',body:JSON.stringify(r)})}catch(err){return status('Ошибка сохранения: '+err.message,true)}
+  e.target.reset();e.target.date.valueAsDate=new Date();load();
 });
+document.querySelector('#planF [name=date]').valueAsDate=new Date();
+document.addEventListener('click',async e=>{
+  const b=e.target.closest('.del');if(!b||!confirm('Удалить строку?'))return;
+  try{await sb('nalichie',`?id=eq.${b.dataset.id}`,{method:'DELETE'})}catch(err){return status('Ошибка: '+err.message,true)}
+  load();
+});
+
 document.getElementById('refresh').onclick=load;
-setInterval(()=>{if(SB_URL&&!document.hidden)load()},60000);
+setInterval(()=>{if(!document.hidden&&document.getElementById('editor').hidden)load()},60000);
 
 document.getElementById('csv').onclick=()=>{
-  const h=['Раздел','Дата','День недели',...ITEMS.map(([,t])=>'Б/У '+t),...ITEMS.map(([,t])=>'Новые 2027 '+t)];
-  const line=(sec,r)=>[sec,fmtDate(r.date),wd(r.date),...ITEMS.map(([k])=>sec==='Наличие'?n(r['bu_'+k]):''),...ITEMS.map(([k])=>n(r['n_'+k]))].join(';');
-  const csv='﻿'+[h.join(';'),...[...db.stock].sort(byDate).map(r=>line('Наличие',r)),...[...db.plan].sort(byDate).map(r=>line('Поступление',r))].join('\n');
-  download('nalichie_kashalot.csv',csv,'text/csv');
+  const lines=[['Дата','Категория','Цвет','Каток','Цельный руль','Складной','Всего'].join(';')];
+  [...colors].sort(byDate).forEach(r=>lines.push([fmtDate(r.date),CATS.find(c=>c.id===r.cat)?.title||r.cat,r.color,r.katok,r.rul_cel,r.rul_skl,n(r.rul_cel)+n(r.rul_skl)].join(';')));
+  lines.push('',['Дата','Категория',...EQ.map(([,t])=>t)].join(';'));
+  [...stock].sort(byDate).forEach(s=>CATS.forEach(c=>lines.push([fmtDate(s.date),c.title,...EQ.map(([k])=>n(s[c.pre+k]))].join(';'))));
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+lines.join('\n')],{type:'text/csv'}));
+  a.download='nalichie_kashalot.csv';a.click();
 };
 
-load();
+// ?demo — пример на тестовых цифрах, без базы
+if(location.search.includes('demo')){
+  const d=new Date().toISOString().slice(0,10);
+  colors=[['bu2026','Фиолетовый','Хард',42,66],['bu2026','Голубой','Софт',42,2],['bu2026','Бирюзовый','Софт',18,1],
+    ['new2027','Фиолетовый','Софт',6,0],['new2027','Салатовый','Софт',17,3],['new2027','Красный','Хард',5,2],['new2027','Белый','Софт',4,1]]
+    .map(([cat,color,katok,rul_cel,rul_skl])=>({date:d,cat,color,katok,rul_cel,rul_skl}));
+  stock=[{date:d,kind:'stock',bu_akb:120,bu_zu:60,bu_pm:4,n_akb:80,n_zu:30,n_pm:10}];
+  plan=[{id:0,date:d,n_ks:100,n_akb:200,n_zu:0,n_pm:0}];
+  render();status('Пример на тестовых цифрах — в базу ничего не сохраняется',true);
+  sb=async()=>{throw new Error('в примере сохранение выключено')};
+}else load();
 </script>
 </body>
 </html>
