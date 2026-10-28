@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ЦУП «Кашалот» — Наличие</title>
+<style>
+  :root{
+    --bg:#0f1115; --side:#12151b; --card:#161a21; --card2:#1b2029; --line:#262c36;
+    --text:#e8ebf0; --muted:#7d8694; --accent:#34d27b; --accent2:#2bb86a;
+    --bu:#f2c94c; --new:#5aa9ff; --beach:#b98cff; --danger:#ff6b6b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--text);font:15px/1.45 -apple-system,"Segoe UI",Roboto,Arial,sans-serif;display:flex}
+  /* sidebar */
+  aside{width:300px;flex:0 0 300px;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:100vh}
+  .brand{padding:28px 24px 18px;border-bottom:1px solid var(--line)}
+  .brand b{font-size:20px}.brand b span{color:var(--accent)}
+  .brand small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+  .grp{padding:22px 24px 8px;color:var(--muted);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+  .nav{display:flex;gap:14px;align-items:center;padding:13px 24px;color:#b9c0cb;text-decoration:none;font-size:16px}
+  .nav:hover{background:#181c23}
+  .nav.on{background:#1e232c;color:#fff}
+  .nav i{font-style:normal;width:20px;text-align:center}
+  /* main */
+  main{flex:1;min-width:0;padding:44px 44px 60px;overflow:auto}
+  .head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+  h1{margin:0;font-size:28px}
+  .sub{color:var(--muted);margin-top:4px}
+  .btn{background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 18px;font:inherit;cursor:pointer}
+  .btn:hover{border-color:#3a4250}
+  .btn.pri{background:var(--accent);border-color:var(--accent);color:#06130b;font-weight:600}
+  .btn.pri:hover{background:var(--accent2)}
+  .intro{color:var(--muted);margin:22px 0 26px;max-width:1100px}
+  /* kpi */
+  .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:28px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+  .kpi .t{color:var(--muted);font-size:13px}
+  .kpi .v{font-size:32px;font-weight:700;margin:4px 0 6px}
+  .kpi .s{font-size:13px;color:var(--muted)}
+  .kpi .s b{font-weight:600}
+  .kpi .s .b{color:var(--bu)} .kpi .s .n{color:var(--new)} .kpi .s .p{color:var(--accent)}
+  /* panels */
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 28px;margin-bottom:26px}
+  .panel h2{margin:0 0 4px;font-size:18px}
+  .panel .ph{color:var(--muted);font-size:14px;margin-bottom:18px}
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+  table{border-collapse:collapse;width:100%;min-width:900px}
+  th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+  th{font-size:13px;font-weight:600;color:#c9ced6;background:var(--card2)}
+  th.g{font-size:14px;color:#fff}
+  th.gb{box-shadow:inset 0 -3px 0 var(--bu)} th.gn{box-shadow:inset 0 -3px 0 var(--new)}
+  td:first-child,th:first-child{text-align:left}
+  .sep{border-left:1px solid var(--line)}
+  tbody tr:hover{background:#1a1f27}
+  td.wd{color:var(--muted)}
+  td.zero{color:#4b5260}
+  td.tot{font-weight:700}
+  tr.last td{background:rgba(52,210,123,.07)}
+  .tag{display:inline-block;font-size:11px;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:1px 8px;margin-left:8px}
+  .del{background:none;border:0;color:var(--muted);cursor:pointer;font-size:16px;padding:2px 6px;border-radius:6px}
+  .del:hover{color:var(--danger);background:#2a1c1f}
+  .empty{color:var(--muted);text-align:center;padding:28px}
+  /* form */
+  form.add{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:18px;padding-top:18px;border-top:1px dashed var(--line)}
+  .f{display:flex;flex-direction:column;gap:4px}
+  .f label{font-size:12px;color:var(--muted)}
+  .f input{background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px 10px;font:inherit;width:96px}
+  .f input[type=date]{width:150px;color-scheme:dark}
+  .f input:focus{outline:none;border-color:var(--accent)}
+  .fg{display:flex;gap:8px;padding:8px 10px 10px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
+  .fg>span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .fg.b{border-color:rgba(242,201,76,.35)} .fg.n{border-color:rgba(90,169,255,.35)}
+  .tools{display:flex;gap:10px;flex-wrap:wrap}
+  .foot{position:sticky;bottom:0}
+  @media (max-width:900px){
+    body{flex-direction:column} aside{width:auto;min-height:0;flex:none}
+    aside .navs{display:flex;overflow-x:auto} .grp{display:none}
+    main{padding:24px 16px}
+    .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+</style>
+</head>
+<body>
+<aside>
+  <div class="brand"><b>🐋 ЦУП <span>«Кашалот»</span></b><small>Центр управления плаванием</small></div>
+  <div class="navs">
+    <div class="grp">Партнёры</div>
+    <a class="nav" href="#"><i>📄</i>Договоры</a>
+    <div class="grp">Техника</div>
+    <a class="nav" href="#"><i>🛒</i>Продажа техники</a>
+    <a class="nav on" href="#"><i>📦</i>Наличие</a>
+    <a class="nav" href="#"><i>✅</i>ОТК</a>
+    <a class="nav" href="#"><i>🛠</i>Сервисный центр</a>
+    <div class="grp">Развитие</div>
+    <a class="nav" href="#"><i>📈</i>Продажи v2</a>
+  </div>
+</aside>
+
+<main>
+  <div class="head">
+    <div><h1>Наличие</h1><div class="sub">Кашалоты, АКБ, зарядные устройства и пляжные модули на складе</div></div>
+    <div class="tools">
+      <button class="btn" id="csv">⤓ Скачать CSV</button>
+      <button class="btn" id="refresh">⟳ Обновить</button>
+    </div>
+  </div>
+
+  <div class="intro">Остатки по дням: Б/У и новые 2027 отдельно. Ниже — планируемые поступления новой техники. Карточки сверху показывают последний остаток и что ещё придёт.</div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <section class="panel">
+    <h2>Наличие на складе</h2>
+    <div class="ph">Каждая строка — остаток на дату. Последняя запись подсвечена.</div>
+    <div class="tablewrap"><table id="stockT"></table></div>
+    <form class="add" id="stockF">
+      <div class="f"><label>Дата</label><input type="date" name="date" required></div>
+      <div class="fg b"><span>Б/У</span>
+        <div class="f"><label>Кашалоты</label><input type="number" min="0" name="bu_ks" placeholder="0"></div>
+        <div class="f"><label>АКБ</label><input type="number" min="0" name="bu_akb" placeholder="0"></div>
+        <div class="f"><label>ЗУ</label><input type="number" min="0" name="bu_zu" placeholder="0"></div>
+        <div class="f"><label>Пляжн. модули</label><input type="number" min="0" name="bu_pm" placeholder="0"></div>
+      </div>
+      <div class="fg n"><span>Новые</span>
+        <div class="f"><label>Кашалоты</label><input type="number" min="0" name="n_ks" placeholder="0"></div>
+        <div class="f"><label>АКБ</label><input type="number" min="0" name="n_akb" placeholder="0"></div>
+        <div class="f"><label>ЗУ</label><input type="number" min="0" name="n_zu" placeholder="0"></div>
+        <div class="f"><label>Пляжн. модули</label><input type="number" min="0" name="n_pm" placeholder="0"></div>
+      </div>
+      <button class="btn pri">+ Добавить остаток</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <h2>Планируемое поступление</h2>
+    <div class="ph">Новые 2027 — что и когда ожидаем на склад.</div>
+    <div class="tablewrap"><table id="planT"></table></div>
+    <form class="add" id="planF">
+      <div class="f"><label>Дата</label><input type="date" name="date" required></div>
+      <div class="fg n"><span>Новые</span>
+        <div class="f"><label>Кашалоты</label><input type="number" min="0" name="n_ks" placeholder="0"></div>
+        <div class="f"><label>АКБ</label><input type="number" min="0" name="n_akb" placeholder="0"></div>
+        <div class="f"><label>ЗУ</label><input type="number" min="0" name="n_zu" placeholder="0"></div>
+        <div class="f"><label>Пляжн. модули</label><input type="number" min="0" name="n_pm" placeholder="0"></div>
+      </div>
+      <button class="btn pri">+ Добавить поступление</button>
+    </form>
+  </section>
+</main>
+
+<script>
+const KEY='kashalot_nalichie_v1';
+const ITEMS=[['ks','Кашалоты'],['akb','АКБ'],['zu','ЗУ'],['pm','Пляжные модули']];
+const WD=['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+
+function load(){
+  try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.stock&&d.plan)return d}catch(e){}
+  return {stock:[],plan:[]};
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}}
+let db=load();
+
+const n=v=>Number(v)||0;
+const fmtDate=s=>{const [y,m,d]=s.split('-');return `${d}.${m}.${y}`};
+const wd=s=>WD[new Date(s+'T00:00:00').getDay()];
+const cell=v=>`<td class="${n(v)?'':'zero'}">${n(v)}</td>`;
+const byDate=(a,b)=>a.date.localeCompare(b.date);
+
+function headRow(groups){
+  const top=`<tr><th rowspan="2">Дата</th><th rowspan="2">День недели</th>${
+    groups.map(([cls,t])=>`<th colspan="4" class="g ${cls} sep">${t}</th>`).join('')}<th rowspan="2"></th></tr>`;
+  const sub=`<tr>${groups.map(()=>ITEMS.map(([,t],i)=>`<th class="${i?'':'sep'}">${t}</th>`).join('')).join('')}</tr>`;
+  return `<thead>${top}${sub}</thead>`;
+}
+
+function renderStock(){
+  const rows=[...db.stock].sort(byDate).reverse();
+  let body=rows.map((r,i)=>`<tr class="${i?'':'last'}">
+    <td>${fmtDate(r.date)}${i?'':'<span class="tag">последний</span>'}</td><td class="wd">${wd(r.date)}</td>
+    ${ITEMS.map(([k],j)=>cell(r['bu_'+k]).replace('<td class="','<td class="'+(j?'':'sep ')))
+      .join('')}
+    ${ITEMS.map(([k],j)=>cell(r['n_'+k]).replace('<td class="','<td class="'+(j?'':'sep ')))
+      .join('')}
+    <td><button class="del" title="Удалить" data-t="stock" data-id="${r.id}">✕</button></td></tr>`).join('');
+  if(!rows.length) body=`<tr><td colspan="11" class="empty">Пока нет записей — добавьте остаток формой ниже</td></tr>`;
+  document.getElementById('stockT').innerHTML=headRow([['gb','Б/У кашалоты'],['gn','Новые 2027']])+`<tbody>${body}</tbody>`;
+}
+
+function renderPlan(){
+  const rows=[...db.plan].sort(byDate);
+  let body=rows.map(r=>`<tr>
+    <td>${fmtDate(r.date)}</td><td class="wd">${wd(r.date)}</td>
+    ${ITEMS.map(([k],j)=>cell(r['n_'+k]).replace('<td class="','<td class="'+(j?'':'sep '))).join('')}
+    <td><button class="del" title="Удалить" data-t="plan" data-id="${r.id}">✕</button></td></tr>`).join('');
+  if(rows.length){
+    body+=`<tr><td class="tot">Итого</td><td></td>${ITEMS.map(([k],j)=>
+      `<td class="tot ${j?'':'sep'}">${rows.reduce((s,r)=>s+n(r['n_'+k]),0)}</td>`).join('')}<td></td></tr>`;
+  } else body=`<tr><td colspan="7" class="empty">Поступлений не запланировано</td></tr>`;
+  const t=document.getElementById('planT');
+  t.innerHTML=headRow([['gn','Новые 2027']])+`<tbody>${body}</tbody>`;
+  t.style.minWidth='640px';
+}
+
+function renderKpis(){
+  const last=[...db.stock].sort(byDate).pop()||{};
+  document.getElementById('kpis').innerHTML=ITEMS.map(([k,t])=>{
+    const bu=n(last['bu_'+k]), nw=n(last['n_'+k]);
+    const pl=db.plan.reduce((s,r)=>s+n(r['n_'+k]),0);
+    return `<div class="kpi"><div class="t">${t}</div><div class="v">${bu+nw}</div>
+      <div class="s"><b class="b">Б/У ${bu}</b> · <b class="n">Новые ${nw}</b>${pl?` · <b class="p">+${pl} придёт</b>`:''}</div></div>`;
+  }).join('');
+}
+
+function render(){renderStock();renderPlan();renderKpis()}
+
+function bindForm(id,table){
+  document.getElementById(id).addEventListener('submit',e=>{
+    e.preventDefault();
+    const r={id:Date.now().toString(36)};
+    new FormData(e.target).forEach((v,k)=>r[k]=k==='date'?v:n(v));
+    if(table==='stock'){db.stock=db.stock.filter(x=>x.date!==r.date)} // одна запись на дату
+    db[table].push(r);save();render();
+    e.target.reset();e.target.date.valueAsDate=new Date();
+  });
+}
+bindForm('stockF','stock');bindForm('planF','plan');
+document.querySelectorAll('input[type=date]').forEach(i=>i.valueAsDate=new Date());
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.del');if(!b)return;
+  if(!confirm('Удалить строку?'))return;
+  db[b.dataset.t]=db[b.dataset.t].filter(x=>x.id!==b.dataset.id);save();render();
+});
+document.getElementById('refresh').onclick=()=>{db=load();render()};
+
+document.getElementById('csv').onclick=()=>{
+  const h=['Раздел','Дата','День недели',...ITEMS.map(([,t])=>'Б/У '+t),...ITEMS.map(([,t])=>'Новые 2027 '+t)];
+  const line=(sec,r)=>[sec,fmtDate(r.date),wd(r.date),...ITEMS.map(([k])=>sec==='Наличие'?n(r['bu_'+k]):''),...ITEMS.map(([k])=>n(r['n_'+k]))].join(';');
+  const csv='﻿'+[h.join(';'),...[...db.stock].sort(byDate).map(r=>line('Наличие',r)),...[...db.plan].sort(byDate).map(r=>line('Поступление',r))].join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='nalichie_kashalot.csv';a.click();
+};
+
+render();
+</script>
+</body>
+</html>
